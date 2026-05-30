@@ -6,11 +6,13 @@ import { ApiError } from "@/lib/api/errors";
 import { useInfiniteMessages } from "@/hooks/useMessages";
 import { useSendMessage } from "@/hooks/useSendMessage";
 
+import { ChatEmptyState } from "./ChatEmptyState";
 import { ChatShell } from "./ChatShell";
 import { ComposeBar } from "./ComposeBar";
 import { LoadOlderTrigger } from "./LoadOlderTrigger";
 import { MessageBubble } from "./MessageBubble";
 import { MessageList } from "./MessageList";
+import { MessageListSkeleton } from "./MessageSkeleton";
 
 export function ChatView() {
   const [draft, setDraft] = useState("");
@@ -122,11 +124,7 @@ export function ChatView() {
           isLoading={isFetchingNextPage}
         />
 
-        {isPending ? (
-          <li className="list-none text-center text-sm text-chat-meta">
-            Loading messages…
-          </li>
-        ) : null}
+        {isPending ? <MessageListSkeleton /> : null}
 
         {isError ? (
           <li
@@ -135,6 +133,10 @@ export function ChatView() {
           >
             {loadError ?? "Could not load messages."}
           </li>
+        ) : null}
+
+        {isSuccess && !isError && messages.length === 0 ? (
+          <ChatEmptyState />
         ) : null}
 
         {messages.map((message) => (

@@ -19,7 +19,7 @@ export const ComposeBar = forwardRef(function ComposeBar(
   ref: Ref<HTMLInputElement>,
 ) {
   return (
-    <footer className="flex shrink-0 gap-3 bg-chat-footer px-4 py-3">
+    <footer className="flex shrink-0 gap-3 bg-chat-footer px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <label className="sr-only" htmlFor="chat-message">
         Message
       </label>
@@ -41,9 +41,11 @@ export const ComposeBar = forwardRef(function ComposeBar(
       />
       <button
         type="button"
+        aria-label="Send message"
+        aria-busy={disabled}
         disabled={disabled || value.trim().length === 0}
         onClick={onSubmit}
-        className="min-h-11 min-w-20 rounded bg-chat-send px-4 font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        className="min-h-11 min-w-20 rounded bg-chat-send px-4 font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-chat-footer disabled:cursor-not-allowed disabled:opacity-60"
       >
         Send
       </button>

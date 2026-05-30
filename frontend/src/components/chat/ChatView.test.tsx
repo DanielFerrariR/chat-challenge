@@ -8,6 +8,7 @@ import { mockIntersectionObserver } from "@/test/mockIntersectionObserver";
 import {
   getGetRequests,
   getLastPostBody,
+  resetMessageHandlerState,
   setFullPageWithOlderHistory,
 } from "@/test/msw/state";
 import { renderChat } from "@/test/renderChat";
@@ -27,7 +28,7 @@ describe("ChatView", () => {
 
     const input = screen.getByRole("textbox", { name: "Message" });
     await user.type(input, "New update");
-    await user.click(screen.getByRole("button", { name: "Send" }));
+    await user.click(screen.getByRole("button", { name: "Send message" }));
 
     await waitFor(() => {
       expect(screen.getByText("New update")).toBeInTheDocument();
@@ -59,5 +60,17 @@ describe("ChatView", () => {
     expect(getRequests[0]?.limit).toBe(String(MESSAGES_PAGE_SIZE));
     expect(getRequests[1]?.before).toBe("2024-01-01T12:00:00.000Z");
     expect(getRequests[1]?.limit).toBe(String(MESSAGES_PAGE_SIZE));
+  });
+
+  it("shows an empty state when there are no messages", async () => {
+    resetMessageHandlerState({ initial: [], older: [] });
+
+    renderChat({ route: "chat", resetHandlers: false });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No messages yet. Send the first one below./),
+      ).toBeInTheDocument();
+    });
   });
 });
