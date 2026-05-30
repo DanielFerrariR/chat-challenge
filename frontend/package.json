@@ -16,7 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seed:messages": "tsx --env-file=.env.local scripts/seed-messages.ts",
-    "prepare": "LEFTHOOK_CONFIG=\"$PWD/lefthook.yml\" lefthook install"
+    "prepare": "lefthook install"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.100.14",
