@@ -9,6 +9,7 @@ import {
 import { createMessage, DEFAULT_AUTHOR } from "@/lib/api/messages";
 import type { Message } from "@/lib/api/types";
 
+import { appendToNewestPage } from "./messageCache";
 import { messagesQueryKey } from "./queryKeys";
 
 export function useSendMessage() {
@@ -26,19 +27,7 @@ export function useSendMessage() {
     onSuccess: (newMessage) => {
       queryClient.setQueryData<InfiniteData<Message[]>>(
         messagesQueryKey,
-        (current) => {
-          if (!current?.pages.length) {
-            return current;
-          }
-
-          const pages = current.pages.map((page, index) =>
-            index === current.pages.length - 1
-              ? [...page, newMessage]
-              : page,
-          );
-
-          return { ...current, pages };
-        },
+        (current) => appendToNewestPage(current, newMessage),
       );
     },
   });
