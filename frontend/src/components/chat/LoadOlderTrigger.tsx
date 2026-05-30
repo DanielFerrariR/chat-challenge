@@ -3,17 +3,19 @@
 import { useEffect, useRef } from "react";
 
 type LoadOlderTriggerProps = {
+  scrollRoot: HTMLElement | null;
   onVisible: () => void;
   hasMore: boolean;
   isLoading: boolean;
 };
 
 export function LoadOlderTrigger({
+  scrollRoot,
   onVisible,
   hasMore,
   isLoading,
 }: LoadOlderTriggerProps) {
-  const sentinelRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
     const element = sentinelRef.current;
@@ -27,20 +29,24 @@ export function LoadOlderTrigger({
           onVisible();
         }
       },
-      { rootMargin: "100px" },
+      { root: scrollRoot, rootMargin: "80px" },
     );
 
     observer.observe(element);
     return () => observer.disconnect();
-  }, [hasMore, isLoading, onVisible]);
+  }, [scrollRoot, hasMore, isLoading, onVisible]);
 
   if (!hasMore) {
     return null;
   }
 
   return (
-    <div ref={sentinelRef} className="py-2 text-center text-sm text-chat-meta">
-      {isLoading ? "Loading older messages…" : null}
-    </div>
+    <li
+      ref={sentinelRef}
+      className="list-none py-2 text-center text-sm text-chat-meta"
+      aria-busy={isLoading}
+    >
+      {isLoading ? "Loading older messages…" : "\u00a0"}
+    </li>
   );
 }

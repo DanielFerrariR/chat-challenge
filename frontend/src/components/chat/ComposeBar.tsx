@@ -1,5 +1,7 @@
 "use client";
 
+import { forwardRef, type Ref } from "react";
+
 type ComposeBarProps = {
   value: string;
   onChange: (value: string) => void;
@@ -7,18 +9,22 @@ type ComposeBarProps = {
   disabled?: boolean;
 };
 
-export function ComposeBar({
-  value,
-  onChange,
-  onSubmit,
-  disabled = false,
-}: ComposeBarProps) {
+export const ComposeBar = forwardRef(function ComposeBar(
+  {
+    value,
+    onChange,
+    onSubmit,
+    disabled = false,
+  }: ComposeBarProps,
+  ref: Ref<HTMLInputElement>,
+) {
   return (
     <footer className="flex shrink-0 gap-3 bg-chat-footer px-4 py-3">
       <label className="sr-only" htmlFor="chat-message">
         Message
       </label>
       <input
+        ref={ref}
         id="chat-message"
         type="text"
         value={value}
@@ -43,4 +49,4 @@ export function ComposeBar({
       </button>
     </footer>
   );
-}
+});

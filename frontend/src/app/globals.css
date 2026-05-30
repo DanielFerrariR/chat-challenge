@@ -8,11 +8,9 @@
   --color-chat-meta: #888888;
   --color-chat-placeholder: #aaaaaa;
   --color-chat-input-border: #cccccc;
-  --color-chat-bg: #f0f0f0;
-
   --max-width-chat-bubble: 40rem;
 
-  --background-image-chat-bg: url("/body-bg.png");
+  --background-image-chat-doodle: url("/body-bg.png");
 }
 
 @layer base {

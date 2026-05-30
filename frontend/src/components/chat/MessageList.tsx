@@ -1,18 +1,24 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 
 type MessageListProps = {
+  scrollRef: Ref<HTMLDivElement>;
   children: ReactNode;
 };
 
-export function MessageList({ children }: MessageListProps) {
+export function MessageList({ scrollRef, children }: MessageListProps) {
   return (
-    <ul
-      role="log"
-      aria-live="polite"
-      aria-relevant="additions"
-      className="flex flex-1 flex-col gap-4 overflow-y-auto px-6 py-4"
+    <div
+      ref={scrollRef}
+      className="flex min-h-0 flex-1 flex-col overflow-y-auto"
     >
-      {children}
-    </ul>
+      <ul
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+        className="flex flex-col gap-4 px-6 py-4"
+      >
+        {children}
+      </ul>
+    </div>
   );
 }
