@@ -12,41 +12,6 @@ Your task is to implement the frontend for a chat application. The backend API, 
 
 **For the backend implementation details and setup instructions, please refer to the [Frontend Challenge Chat API repository](https://github.com/DoodleScheduling/frontend-challenge-chat-api)**.
 
-## Project Setup
-
-This repository ships with a [Next.js](https://nextjs.org/) (App Router) starter using React, TypeScript, Vitest, and oxlint/oxfmt.
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) `22.20.0` (see `.nvmrc` if you use nvm)
-- [pnpm](https://pnpm.io/) `>=10`
-
-### Install and run
-
-```shell
-pnpm install
-pnpm dev -- -p 3001
-```
-
-Open [http://localhost:3001](http://localhost:3001) in your browser.
-
-> **Note:** The backend API runs on port `3000` by default, so the frontend dev server uses port `3001` to avoid a conflict.
-
-Start with `src/app/page.tsx` and add components under `src/` as needed.
-
-### Scripts
-
-| Command          | Description                              |
-| ---------------- | ---------------------------------------- |
-| `pnpm dev`       | Start the development server (Turbopack) |
-| `pnpm build`     | Create a production build                |
-| `pnpm start`     | Serve the production build               |
-| `pnpm test`      | Run tests                                |
-| `pnpm lint`      | Lint with oxlint                         |
-| `pnpm typecheck` | Run TypeScript type checking             |
-
-Git hooks (format, lint, typecheck) are installed automatically via [lefthook](https://github.com/evilmartians/lefthook) when you run `pnpm install`.
-
 ### Frontend challenge Chat API Details
 
 - **Authentication:** All message related endpoints require a Bearer token.
@@ -81,7 +46,7 @@ Git hooks (format, lint, typecheck) are installed automatically via [lefthook](h
 ## Challenge Requirements
 
 - **Time Commitment:** Spend 4 to 6 hours on the challenge over the course of one week.
-- **Technology:** Build the interface using React and TypeScript. This repo is pre-configured with Next.js (App Router).
+- **Technology:** Build the interface using React and TypeScript. Feel free to use frameworks like Next.js if desired.
 - **Responsiveness:** The interface must be responsive and work smoothly on commonly used browsers and mobile devices.
 - **Code Quality:** Maintain clear code readability, commit often with useful messages, and prioritize performance and accessibility.
 
