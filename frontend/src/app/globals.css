@@ -1,21 +1,33 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@import "tailwindcss";
+
+@theme {
+  --color-chat-footer: #3498db;
+  --color-chat-send: #ff7058;
+  --color-chat-sent: #fff9c4;
+  --color-chat-body: #333333;
+  --color-chat-meta: #888888;
+  --color-chat-placeholder: #aaaaaa;
+  --color-chat-input-border: #cccccc;
+  --color-chat-bg: #f0f0f0;
+
+  --max-width-chat-bubble: 40rem;
+
+  --background-image-chat-bg: url("/body-bg.png");
 }
 
-body {
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  line-height: 1.5;
-}
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
 
-main {
-  display: grid;
-  min-height: 100dvh;
-  place-items: center;
+  body {
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    line-height: 1.5;
+    color: var(--color-chat-body);
+  }
 }
