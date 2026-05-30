@@ -15,7 +15,7 @@ type MessageSkeletonProps = {
   align: "start" | "end";
 };
 
-export function MessageSkeleton({ align }: MessageSkeletonProps) {
+function MessageSkeleton({ align }: MessageSkeletonProps) {
   const isSent = align === "end";
 
   return (

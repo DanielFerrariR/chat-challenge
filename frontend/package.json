@@ -12,10 +12,11 @@
     "lint:fix": "oxlint --fix",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
+    "knip": "knip",
     "test": "vitest run",
     "test:watch": "vitest",
     "seed:messages": "tsx --env-file=.env.local scripts/seed-messages.ts",
-    "prepare": "lefthook install"
+    "prepare": "LEFTHOOK_CONFIG=\"$PWD/lefthook.yml\" lefthook install"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.100.14",
@@ -36,6 +37,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260527.2",
     "@vitejs/plugin-react": "^6.0.2",
     "jsdom": "^29.1.1",
+    "knip": "^6.14.2",
     "lefthook": "^2.1.9",
     "msw": "^2.14.6",
     "oxfmt": "^0.52.0",

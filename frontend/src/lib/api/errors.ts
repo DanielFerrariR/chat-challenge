@@ -1,4 +1,4 @@
-export type ValidationFieldError = {
+type ValidationFieldError = {
   field: string;
   message: string;
 };
@@ -33,7 +33,7 @@ export class UnauthorizedError extends ApiError {
   }
 }
 
-export class ValidationError extends ApiError {
+class ValidationError extends ApiError {
   readonly fields: ValidationFieldError[];
 
   constructor(fields: ValidationFieldError[], body?: unknown) {

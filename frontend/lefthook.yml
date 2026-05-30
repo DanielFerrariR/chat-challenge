@@ -2,11 +2,20 @@ pre-commit:
   parallel: true
   commands:
     format:
+      root: frontend/
       glob: "*.{js,jsx,ts,tsx,json,css,md}"
       run: pnpm exec oxfmt --write {staged_files}
       stage_fixed: true
     lint:
+      root: frontend/
       glob: "*.{js,jsx,ts,tsx}"
       run: pnpm exec oxlint {staged_files}
     typecheck:
+      root: frontend/
       run: pnpm typecheck
+
+pre-push:
+  commands:
+    knip:
+      root: frontend/
+      run: pnpm knip

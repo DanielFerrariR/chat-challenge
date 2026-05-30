@@ -8,7 +8,6 @@ import type {
 } from "./types";
 
 export const MESSAGES_PATH = "/api/v1/messages";
-export const DEFAULT_MESSAGES_LIMIT = 50;
 export const DEFAULT_AUTHOR = "John Doe";
 
 function buildMessagesUrl(params?: GetMessagesParams): string {
@@ -27,7 +26,7 @@ function buildMessagesUrl(params?: GetMessagesParams): string {
   return url.toString();
 }
 
-export async function fetchWithAuth<T>(
+async function fetchWithAuth<T>(
   input: string,
   init?: RequestInit,
 ): Promise<T> {
