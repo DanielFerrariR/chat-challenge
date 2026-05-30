@@ -65,3 +65,26 @@ Once completed, send an email with a link to your repository to `code-challenge@
 We will review your submission within one week although sometimes it might take a bit longer.
 
 Good luck and happy coding!
+
+---
+
+## Running this app locally
+
+Start the API from `backend/` (see the [monorepo README](../README.md)), then from `frontend/`:
+
+```shell
+pnpm install
+cp .env.local.example .env.local
+pnpm dev -- -p 3001
+```
+
+### Environment variables
+
+Create `.env.local` from `.env.local.example`:
+
+| Variable | Description |
+| -------- | ----------- |
+| `NEXT_PUBLIC_API_BASE_URL` | Chat API origin, e.g. `http://localhost:3000` |
+| `NEXT_PUBLIC_API_TOKEN` | Bearer token (same as backend: `super-secret-doodle-token`) |
+
+`.env.local` is gitignored. Without it, the app uses the same defaults as the example file.
