@@ -4,6 +4,7 @@ import type { CreateMessageBody, Message } from "@/lib/api/types";
 
 import { API_TOKEN, MESSAGES_URL } from "./constants";
 import {
+  getGetRequests,
   getMessageHandlerState,
   recordGetRequest,
   recordPostBody,
@@ -22,14 +23,15 @@ export const handlers = [
       return unauthorized();
     }
 
-    recordGetRequest(request.url);
-
     const url = new URL(request.url);
-    const before = url.searchParams.get("before");
     const limit = Number(url.searchParams.get("limit") ?? "50");
     const { initial, older } = getMessageHandlerState();
 
-    const page = before ? older : initial;
+    // First GET = latest window (before "now"); later GETs = older history
+    const isFirstPage = getGetRequests().length === 0;
+    recordGetRequest(request.url);
+
+    const page = isFirstPage ? initial : older;
     return HttpResponse.json(page.slice(0, limit));
   }),
 

@@ -7,13 +7,21 @@ import { getMessages } from "@/lib/api/messages";
 import { flattenMessagePages } from "./flattenMessagePages";
 import { MESSAGES_PAGE_SIZE, messagesQueryKey } from "./queryKeys";
 
+/** Cursor for the first page: messages with createdAt before this (i.e. the latest). */
+function getLatestMessagesCursor(): string {
+  return new Date().toISOString();
+}
+
 export function useInfiniteMessages() {
   const query = useInfiniteQuery({
     queryKey: messagesQueryKey,
     initialPageParam: undefined as string | undefined,
     queryFn: ({ pageParam }) =>
       pageParam === undefined
-        ? getMessages({ limit: MESSAGES_PAGE_SIZE })
+        ? getMessages({
+            limit: MESSAGES_PAGE_SIZE,
+            before: getLatestMessagesCursor(),
+          })
         : getMessages({ before: pageParam, limit: MESSAGES_PAGE_SIZE }),
     getNextPageParam: (lastPage) => {
       if (lastPage.length < MESSAGES_PAGE_SIZE) {

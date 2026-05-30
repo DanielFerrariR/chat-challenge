@@ -36,7 +36,7 @@ describe("useInfiniteMessages", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(getGetRequests()[0]?.limit).toBe(String(MESSAGES_PAGE_SIZE));
-    expect(getGetRequests()[0]?.before).toBeNull();
+    expect(getGetRequests()[0]?.before).not.toBeNull();
     expect(result.current.messages).toHaveLength(MESSAGES_PAGE_SIZE);
     expect(result.current.hasNextPage).toBe(true);
   });
