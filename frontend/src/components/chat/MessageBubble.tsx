@@ -1,8 +1,7 @@
+import { DEFAULT_AUTHOR } from "@/lib/api/messages";
+import type { Message } from "@/lib/api/types";
 import { decodeHtml } from "@/lib/decodeHtml";
 import { formatTimestamp } from "@/lib/formatTimestamp";
-import type { Message } from "@/lib/api/types";
-
-const DEFAULT_AUTHOR = "John Doe";
 
 type MessageBubbleProps = {
   message: Message;
