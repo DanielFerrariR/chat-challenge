@@ -56,9 +56,10 @@ Do not commit `.env.local`; only [frontend/.env.local.example](./frontend/.env.l
 | `pnpm dev`       | Start the development server (Turbopack) |
 | `pnpm build`     | Create a production build                |
 | `pnpm start`     | Serve the production build               |
-| `pnpm test`      | Run tests                                |
-| `pnpm lint`      | Lint with oxlint                         |
-| `pnpm typecheck` | Run TypeScript type checking             |
+| `pnpm test`          | Run tests                                |
+| `pnpm seed:messages` | POST 100 test messages to the API (API must be up) |
+| `pnpm lint`          | Lint with oxlint                         |
+| `pnpm typecheck`     | Run TypeScript type checking             |
 
 Git hooks (format, lint, typecheck) are installed automatically via [lefthook](https://github.com/evilmartians/lefthook) when you run `pnpm install`.
 

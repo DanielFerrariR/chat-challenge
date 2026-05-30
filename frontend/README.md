@@ -88,3 +88,14 @@ Create `.env.local` from `.env.local.example`:
 | `NEXT_PUBLIC_API_TOKEN` | Bearer token (same as backend: `super-secret-doodle-token`) |
 
 `.env.local` is gitignored. Without it, the app uses the same defaults as the example file.
+
+### Seed test messages
+
+With the API running, create 100 messages (mix of John Doe and other authors) via the same client the app uses:
+
+```shell
+cp .env.local.example .env.local   # if you have not already
+pnpm seed:messages
+```
+
+Optional: `MESSAGE_COUNT=50 pnpm seed:messages`
