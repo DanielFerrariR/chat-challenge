@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { ApiError } from "@/lib/api/errors";
 import { useInfiniteMessages } from "@/hooks/useMessages";
+import { usePollNewMessages } from "@/hooks/usePollNewMessages";
 import { useSendMessage } from "@/hooks/useSendMessage";
+import { isMessagePollingEnabled } from "@/hooks/queryKeys";
 
 import { ChatEmptyState } from "./ChatEmptyState";
 import { ChatShell } from "./ChatShell";
@@ -13,19 +15,41 @@ import { LoadOlderTrigger } from "./LoadOlderTrigger";
 import { MessageBubble } from "./MessageBubble";
 import { MessageList } from "./MessageList";
 import { MessageListSkeleton } from "./MessageSkeleton";
+import { NewMessagesButton } from "./NewMessagesButton";
 
-export function ChatView() {
+type ChatViewProps = {
+  /** Test-only override; production uses `isMessagePollingEnabled`. */
+  enableMessagePolling?: boolean;
+};
+
+export function ChatView({
+  enableMessagePolling = isMessagePollingEnabled,
+}: ChatViewProps = {}) {
   const [draft, setDraft] = useState("");
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const isNearBottomRef = useRef(true);
   const [scrollRoot, setScrollRoot] = useState<HTMLDivElement | null>(null);
   const scrollHeightBeforePrepend = useRef(0);
   const hasInitialScroll = useRef(false);
+  const previousMessageCount = useRef(0);
   const messageInputRef = useRef<HTMLInputElement>(null);
+
+  const isNearBottom = useCallback(() => {
+    const element = scrollRef.current;
+    if (!element) {
+      return true;
+    }
+
+    const distanceFromBottom =
+      element.scrollHeight - element.scrollTop - element.clientHeight;
+    return distanceFromBottom < 80;
+  }, []);
 
   const setScrollContainer = useCallback((node: HTMLDivElement | null) => {
     scrollRef.current = node;
     setScrollRoot(node);
-  }, []);
+    isNearBottomRef.current = isNearBottom();
+  }, [isNearBottom]);
 
   const {
     messages,
@@ -37,6 +61,11 @@ export function ChatView() {
     isFetchingNextPage,
     isSuccess,
   } = useInfiniteMessages();
+
+  const { bufferedCount, flushBufferedMessages } = usePollNewMessages({
+    enabled: enableMessagePolling && isSuccess,
+    isNearBottomRef,
+  });
 
   const sendMessage = useSendMessage();
 
@@ -51,7 +80,14 @@ export function ChatView() {
     } else {
       element.scrollTop = element.scrollHeight;
     }
+
+    isNearBottomRef.current = true;
   }, []);
+
+  const handleJumpToNewMessages = useCallback(() => {
+    flushBufferedMessages();
+    scrollToBottom("instant");
+  }, [flushBufferedMessages, scrollToBottom]);
 
   const handleLoadOlder = useCallback(() => {
     const element = scrollRef.current;
@@ -63,7 +99,7 @@ export function ChatView() {
     void fetchNextPage();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isSuccess || isFetchingNextPage || messages.length === 0) {
       return;
     }
@@ -81,15 +117,50 @@ export function ChatView() {
     if (!hasInitialScroll.current) {
       scrollToBottom("instant");
       hasInitialScroll.current = true;
+      previousMessageCount.current = messages.length;
+      return;
     }
+
+    const addedCount = messages.length - previousMessageCount.current;
+    // Use the ref (sticky-bottom intent before this render), not isNearBottom():
+    // after appending messages the list is taller so a live measurement reads "not at bottom".
+    if (addedCount > 0 && isNearBottomRef.current) {
+      scrollToBottom("instant");
+      requestAnimationFrame(() => {
+        if (isNearBottomRef.current) {
+          scrollToBottom("instant");
+        }
+      });
+    }
+
+    previousMessageCount.current = messages.length;
   }, [isSuccess, isFetchingNextPage, messages, scrollToBottom]);
 
   useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) {
+      return;
+    }
+
+    const handleScroll = () => {
+      isNearBottomRef.current = isNearBottom();
+      if (isNearBottomRef.current) {
+        flushBufferedMessages();
+        scrollToBottom("instant");
+      }
+    };
+
+    element.addEventListener("scroll", handleScroll, { passive: true });
+    return () => element.removeEventListener("scroll", handleScroll);
+  }, [scrollRoot, isNearBottom, flushBufferedMessages, scrollToBottom]);
+
+  useEffect(() => {
     if (sendMessage.isSuccess) {
-      scrollToBottom();
+      flushBufferedMessages();
+      scrollToBottom("instant");
       messageInputRef.current?.focus();
     }
-  }, [sendMessage.isSuccess, messages.length, scrollToBottom]);
+  }, [sendMessage.isSuccess, messages.length, scrollToBottom, flushBufferedMessages]);
 
   const handleSubmit = () => {
     const text = draft.trim();
@@ -116,33 +187,40 @@ export function ChatView() {
     <ChatShell>
       <h1 className="sr-only">Chat</h1>
 
-      <MessageList scrollRef={setScrollContainer}>
-        <LoadOlderTrigger
-          scrollRoot={scrollRoot}
-          onVisible={handleLoadOlder}
-          hasMore={hasNextPage}
-          isLoading={isFetchingNextPage}
+      <div className="relative flex min-h-0 flex-1 flex-col">
+        <NewMessagesButton
+          count={bufferedCount}
+          onClick={handleJumpToNewMessages}
         />
 
-        {isPending ? <MessageListSkeleton /> : null}
+        <MessageList scrollRef={setScrollContainer}>
+          <LoadOlderTrigger
+            scrollRoot={scrollRoot}
+            onVisible={handleLoadOlder}
+            hasMore={hasNextPage}
+            isLoading={isFetchingNextPage}
+          />
 
-        {isError ? (
-          <li
-            className="list-none rounded bg-white/90 px-4 py-3 text-sm text-red-700"
-            role="alert"
-          >
-            {loadError ?? "Could not load messages."}
-          </li>
-        ) : null}
+          {isPending ? <MessageListSkeleton /> : null}
 
-        {isSuccess && !isError && messages.length === 0 ? (
-          <ChatEmptyState />
-        ) : null}
+          {isError ? (
+            <li
+              className="list-none rounded bg-white/90 px-4 py-3 text-sm text-red-700"
+              role="alert"
+            >
+              {loadError ?? "Could not load messages."}
+            </li>
+          ) : null}
 
-        {messages.map((message) => (
-          <MessageBubble key={message._id} message={message} />
-        ))}
-      </MessageList>
+          {isSuccess && !isError && messages.length === 0 ? (
+            <ChatEmptyState />
+          ) : null}
+
+          {messages.map((message) => (
+            <MessageBubble key={message._id} message={message} />
+          ))}
+        </MessageList>
+      </div>
 
       {sendError ? (
         <p className="bg-chat-footer px-4 py-1 text-center text-sm text-white" role="alert">

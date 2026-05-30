@@ -9,6 +9,7 @@ export function MessageList({ scrollRef, children }: MessageListProps) {
   return (
     <div
       ref={scrollRef}
+      data-testid="chat-scroll"
       className="flex min-h-0 flex-1 flex-col overflow-y-auto"
     >
       <ul
