@@ -75,17 +75,17 @@ Start the API from `backend/` (see the [monorepo README](../README.md)), then fr
 ```shell
 pnpm install
 cp .env.local.example .env.local
-pnpm dev -- -p 3001
+pnpm dev
 ```
 
 ### Environment variables
 
 Create `.env.local` from `.env.local.example`:
 
-| Variable | Description |
-| -------- | ----------- |
-| `NEXT_PUBLIC_API_BASE_URL` | Chat API origin, e.g. `http://localhost:3000` |
-| `NEXT_PUBLIC_API_TOKEN` | Bearer token (same as backend: `super-secret-doodle-token`) |
+| Variable                   | Description                                                 |
+| -------------------------- | ----------------------------------------------------------- |
+| `NEXT_PUBLIC_API_BASE_URL` | Chat API origin, e.g. `http://localhost:3000`               |
+| `NEXT_PUBLIC_API_TOKEN`    | Bearer token (same as backend: `super-secret-doodle-token`) |
 
 `.env.local` is gitignored. Without it, the app uses the same defaults as the example file.
 

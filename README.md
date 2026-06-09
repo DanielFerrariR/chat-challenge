@@ -13,6 +13,7 @@ Doodle frontend engineer challenge — monorepo with the chat API (`backend/`) a
 From `backend/`:
 
 ```shell
+npm install
 docker compose up
 ```
 
@@ -25,7 +26,7 @@ From `frontend/`:
 ```shell
 pnpm install
 cp .env.local.example .env.local
-pnpm dev -- -p 3001
+pnpm dev
 ```
 
 Open [http://localhost:3001](http://localhost:3001) in your browser.

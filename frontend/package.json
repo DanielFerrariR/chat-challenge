@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack -p 3001",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsgo --noEmit",
@@ -50,13 +50,7 @@
   },
   "engines": {
     "node": "22.20.0",
-    "pnpm": ">=10"
+    "pnpm": ">=11"
   },
-  "packageManager": "pnpm@10.12.4",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "lefthook",
-      "sharp"
-    ]
-  }
+  "packageManager": "pnpm@11.5.2"
 }
