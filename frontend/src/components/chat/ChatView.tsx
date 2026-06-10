@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { ApiError } from "@/lib/api/errors";
 import { useInfiniteMessages } from "@/hooks/useMessages";
@@ -45,11 +51,14 @@ export function ChatView({
     return distanceFromBottom < 80;
   }, []);
 
-  const setScrollContainer = useCallback((node: HTMLDivElement | null) => {
-    scrollRef.current = node;
-    setScrollRoot(node);
-    isNearBottomRef.current = isNearBottom();
-  }, [isNearBottom]);
+  const setScrollContainer = useCallback(
+    (node: HTMLDivElement | null) => {
+      scrollRef.current = node;
+      setScrollRoot(node);
+      isNearBottomRef.current = isNearBottom();
+    },
+    [isNearBottom],
+  );
 
   const {
     messages,
@@ -107,7 +116,8 @@ export function ChatView({
     if (scrollHeightBeforePrepend.current > 0) {
       const element = scrollRef.current;
       if (element) {
-        const heightAdded = element.scrollHeight - scrollHeightBeforePrepend.current;
+        const heightAdded =
+          element.scrollHeight - scrollHeightBeforePrepend.current;
         element.scrollTop += heightAdded;
       }
       scrollHeightBeforePrepend.current = 0;
@@ -146,13 +156,12 @@ export function ChatView({
       isNearBottomRef.current = isNearBottom();
       if (isNearBottomRef.current) {
         flushBufferedMessages();
-        scrollToBottom("instant");
       }
     };
 
     element.addEventListener("scroll", handleScroll, { passive: true });
     return () => element.removeEventListener("scroll", handleScroll);
-  }, [scrollRoot, isNearBottom, flushBufferedMessages, scrollToBottom]);
+  }, [scrollRoot, isNearBottom, flushBufferedMessages]);
 
   useEffect(() => {
     if (sendMessage.isSuccess) {
@@ -160,7 +169,12 @@ export function ChatView({
       scrollToBottom("instant");
       messageInputRef.current?.focus();
     }
-  }, [sendMessage.isSuccess, messages.length, scrollToBottom, flushBufferedMessages]);
+  }, [
+    sendMessage.isSuccess,
+    messages.length,
+    scrollToBottom,
+    flushBufferedMessages,
+  ]);
 
   const handleSubmit = () => {
     const text = draft.trim();
@@ -181,7 +195,7 @@ export function ChatView({
         : null;
 
   const loadError =
-    error instanceof ApiError ? error.message : error?.message ?? null;
+    error instanceof ApiError ? error.message : (error?.message ?? null);
 
   return (
     <ChatShell>
@@ -223,7 +237,10 @@ export function ChatView({
       </div>
 
       {sendError ? (
-        <p className="bg-chat-footer px-4 py-1 text-center text-sm text-white" role="alert">
+        <p
+          className="bg-chat-footer px-4 py-1 text-center text-sm text-white"
+          role="alert"
+        >
           {sendError}
         </p>
       ) : null}

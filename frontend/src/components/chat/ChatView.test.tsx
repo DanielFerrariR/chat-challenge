@@ -1,5 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -79,6 +85,39 @@ describe("ChatView", () => {
     expect(getRequests[0]?.limit).toBe(String(MESSAGES_PAGE_SIZE));
     expect(getRequests[1]?.before).toBe("2024-01-01T12:00:00.000Z");
     expect(getRequests[1]?.limit).toBe(String(MESSAGES_PAGE_SIZE));
+  });
+
+  it("does not snap back to the bottom when scrolling up from near the bottom", async () => {
+    renderChatView();
+
+    await waitFor(() => {
+      expect(screen.getByText("Hey team!")).toBeInTheDocument();
+    });
+
+    const scroll = screen.getByTestId("chat-scroll");
+    Object.defineProperty(scroll, "scrollHeight", {
+      configurable: true,
+      value: 1_000,
+    });
+    Object.defineProperty(scroll, "clientHeight", {
+      configurable: true,
+      value: 400,
+    });
+
+    scroll.scrollTo = vi.fn();
+
+    // Start at the bottom (within the 80px near-bottom threshold).
+    scroll.scrollTop = 550;
+    fireEvent.scroll(scroll);
+
+    vi.mocked(scroll.scrollTo).mockClear();
+
+    // User scrolls up — must not be forced back to the bottom.
+    scroll.scrollTop = 400;
+    fireEvent.scroll(scroll);
+
+    expect(scroll.scrollTo).not.toHaveBeenCalled();
+    expect(scroll.scrollTop).toBe(400);
   });
 
   it("shows a new messages button without growing the list while scrolled up", async () => {
